@@ -24,7 +24,7 @@ struct ContentView: View {
                     .onTapGesture {
                         if currentCard == "red_back" {
                             addCards()
-                            currentCard = cards[shuffledCards[0]]!
+                            
                         }
                     }
                 Button("Reset") {
