@@ -21,28 +21,31 @@ struct ContentView: View {
                 Image("\(currentCard)")
                     .resizable()
                     .frame(width: 256, height: 391)
-                    .onTapGesture {
-                        if currentCard == "red_back" {
-                            addCards()
-                            
-                        }
-                    }
-                Button("Reset") {
+                Button("Play"){
+                    if let files = try? FileManager.default.contentsOfDirectory(atPath: "/Users/cmarkiewicz/Desktop/HigherOrLower/HigherOrLower/Assets.xcassets/PNG") {
+                        for var file in 0..<files.count {
+                            if files[file] == ".DS_Store" {
+                                file -= 1
+                            }
+                            else {
+                                cards[file] = files[file]
+                            }
+                         }
+                        print(cards.values)
+                     }
+                    
                     shuffledCards = cards.keys.shuffled()
+                   var nextCard = shuffledCards.makeIterator()
+                    currentCard = String(cards[nextCard.next()!]!.dropLast(9))
+                }
+                Button("Higher"){
+                    print("Hello")
+                }
+                Button("Lower"){
+                    
                 }
             }
         }
-    }
-    func addCards()
-    {
-        if  let directory = Bundle.main.path(forResource: "PNG", ofType: ""),
-             let files = try? FileManager.default.contentsOfDirectory(atPath: directory) {
-             for file in files {
-                 var i = 0
-                 cards[i] = file
-                 i+=1
-             }
-         }
     }
 }
 
