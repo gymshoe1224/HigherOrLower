@@ -10,57 +10,71 @@ import SwiftUI
 struct ContentView: View {
     @State private var cards = Array<Card>()
     @State private var shuffledCards = Array<Card>()
-    @State private var values = Array<Int>()
     @State private var score = 0
+    @State private var nextCard = Card(value: -1, name: "red_back")
     @State private var currentCard = Card(value: -1, name: "red_back")
-    @State private var previousCard = Card()
-    @State private var gameOver = false
+    @State private var gameOver = true
     var body: some View {
-        ZStack {
-            Color.gray.opacity(0.7)
-            VStack{
-                Text("Higher Or Lower")
-                    .padding()
-                    .font(.largeTitle)
-                Image(currentCard.getName())
-                    .resizable()
-                    .frame(width: 256, height: 391)
-                Text("Score: \(score)")
-                Button("Play"){
-                    //List of Names
-                    let names = ["2S", "2C", "2H", "2D", "3S", "3C", "3H", "3D", "4S", "4C", "4H", "4D", "5S", "5C", "5H", "5D", "6S", "6C", "6H", "6D", "7S", "7C", "7H", "7D", "8S", "8C", "8H", "8D", "9S", "9C", "9H", "9D", "10S", "10C", "10H", "10D", "11S", "11C", "11H", "11D", "12S", "12C", "12H", "12D", "13S", "13C", "13H", "13D", "14S", "14C", "14H", "14D"]
-                    for name in names {
-                        //create a list of Cards to store value and name
-                        cards.append(Card(value: Int(name.dropLast())!, name: name))
-                    }
-                    shuffledCards = cards.shuffled()
-                    previousCard = currentCard
-                    currentCard = shuffledCards[0]
-                }
-                
-                var cardNumber = 0
-                Button("Higher") { //if previous card is higher than current add a point to score; If not reset the game
-                    if previousCard.compareCards(card1: currentCard) <= 0 {
-                        score += 1
-                        previousCard = currentCard
-                        currentCard = shuffledCards[cardNumber]
-                        print(currentCard.getName())
-                        cardNumber += 1
-                    }
-                    else {
-                        end()
-                    }
-                }
-                Button("Lower") { //if previous card is lower than current add a point to score; If not reset the game
-                    if previousCard.compareCards(card1: currentCard) >= 0 {
-                        score += 1
-                        previousCard = currentCard
-                        currentCard = shuffledCards[cardNumber]
-                        print(currentCard.getName())
-                        cardNumber += 1
-                    }
-                    else {
-                        end()
+        NavigationView {
+            ZStack {
+                Color.gray.opacity(0.7).ignoresSafeArea()
+                VStack {
+                    Text("Higher Or Lower")
+                        .font(Font.custom("Arial", size: 48))
+                        .colorInvert()
+                        .shadow(color: .red, radius: 10)
+                        .padding()
+                    NavigationLink("How To Play", destination: InstructionsView())
+                        .font(Font.custom("Arial", size: 24))
+                        .padding()
+                    Text(String(score))
+                        .font(Font.custom("Arial", size: 48))
+                        .colorInvert()
+                        .bold()
+                        .padding()
+                    Image(currentCard.getName())
+                        .resizable()
+                        .frame(width: 256, height: 391)
+                    ZStack {
+                        Button("Play") {
+                            //List of Names
+                            let names = ["2S", "2C", "2H", "2D", "3S", "3C", "3H", "3D", "4S", "4C", "4H", "4D", "5S", "5C", "5H", "5D", "6S", "6C", "6H", "6D", "7S", "7C", "7H", "7D", "8S", "8C", "8H", "8D", "9S", "9C", "9H", "9D", "10S", "10C", "10H", "10D", "11S", "11C", "11H", "11D", "12S", "12C", "12H", "12D", "13S", "13C", "13H", "13D", "14S", "14C", "14H", "14D"]
+                            for name in names {
+                                //create a list of Cards to store value and name
+                                cards.append(Card(value: Int(name.dropLast())!, name: name))
+                            }
+                            shuffledCards = cards.shuffled()
+                            currentCard = shuffledCards[0]
+                            nextCard = shuffledCards[1]
+                            gameOver = false
+                        }
+                        .opacity(gameOver == false ? 0 : 1)
+                        .buttonStyle(CustomButtonStyle())
+                        HStack {
+                            Button("Higher") { //if previous card is higher than current add a point to score; If not reset the game
+                                if currentCard.compareCards(card1: nextCard) <= 0 {
+                                    shuffledCards.remove(at: 0)
+                                    getNextCard()
+                                    score+=1
+                                }
+                                else {
+                                    end()
+                                }
+                            }
+                            .buttonStyle(CustomButtonStyle())
+                            .opacity(gameOver == true ? 0 : 1)
+                            Button("Lower") { //if previous card is lower than current add a point to score; If not reset the game
+                                if currentCard.compareCards(card1: nextCard) >= 0 {
+                                    getNextCard()
+                                    score+=1
+                                }
+                                else {
+                                    end()
+                                }
+                            }
+                            .buttonStyle(CustomButtonStyle())
+                            .opacity(gameOver == true ? 0 : 1)
+                        }
                     }
                 }
             }
@@ -68,11 +82,43 @@ struct ContentView: View {
     }
     
     func end() { //end the game
-
+        gameOver = true
+        score = 0
+        currentCard = Card(value: -1, name: "red_back")
+        nextCard = Card(value: -1, name: "red_back")
     }
     
-    func nextCard() { //go to next card
+    func getNextCard() { //go to next card
+        currentCard = nextCard
+        if score < shuffledCards.count - 1 {
+            nextCard = shuffledCards[score+1]
+        }
         
+    }
+    struct CustomButtonStyle: ButtonStyle {
+        func makeBody(configuration: Configuration) -> some View {
+            configuration.label
+                .frame(width: 80.95, height: 50)
+                .font(Font.custom("Arial", size: 24))
+                .padding()
+                .background(.red).opacity(configuration.isPressed ? 0.0 : 1.0)
+                .foregroundColor(.white)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+        }
+    }
+    
+    struct InstructionsView: View {
+        var body: some View {
+            ZStack {
+                Color.gray.opacity(0.7).ignoresSafeArea()
+                VStack {
+                    VStack (alignment: .leading) {
+                        
+                    }
+                    Spacer()
+                }
+            }
+        }
     }
 }
 
