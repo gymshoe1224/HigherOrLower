@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26C7CD912942406400638912 /* InstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26C7CD902942406400638912 /* InstructionsView.swift */; };
 		26CCE1802922A4B500A1CE3E /* HigherOrLowerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CCE17F2922A4B500A1CE3E /* HigherOrLowerApp.swift */; };
 		26CCE1822922A4B500A1CE3E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CCE1812922A4B500A1CE3E /* ContentView.swift */; };
 		26CCE1842922A4B700A1CE3E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26CCE1832922A4B700A1CE3E /* Assets.xcassets */; };
@@ -34,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		26C7CD902942406400638912 /* InstructionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstructionsView.swift; sourceTree = "<group>"; };
 		26CCE17C2922A4B500A1CE3E /* HigherOrLower.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HigherOrLower.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26CCE17F2922A4B500A1CE3E /* HigherOrLowerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HigherOrLowerApp.swift; sourceTree = "<group>"; };
 		26CCE1812922A4B500A1CE3E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			children = (
 				26CCE17F2922A4B500A1CE3E /* HigherOrLowerApp.swift */,
 				26CCE1812922A4B500A1CE3E /* ContentView.swift */,
+				26C7CD902942406400638912 /* InstructionsView.swift */,
 				26CCE1832922A4B700A1CE3E /* Assets.xcassets */,
 				26CCE1852922A4B700A1CE3E /* Preview Content */,
 			);
@@ -258,6 +261,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26CCE1822922A4B500A1CE3E /* ContentView.swift in Sources */,
+				26C7CD912942406400638912 /* InstructionsView.swift in Sources */,
 				26CCE1802922A4B500A1CE3E /* HigherOrLowerApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

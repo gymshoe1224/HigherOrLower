@@ -14,6 +14,8 @@ struct ContentView: View {
     @State private var nextCard = Card(value: -1, name: "red_back")
     @State private var currentCard = Card(value: -1, name: "red_back")
     @State private var gameOver = true
+    @State private var endReached = false
+    @State private var degrees = 0.0
     var body: some View {
         NavigationView {
             ZStack {
@@ -26,6 +28,8 @@ struct ContentView: View {
                         .padding()
                     NavigationLink("How To Play", destination: InstructionsView())
                         .font(Font.custom("Arial", size: 24))
+                        .frame(width: 196, height: 50)
+                        .buttonStyle(CustomButtonStyle())
                         .padding()
                     Text(String(score))
                         .font(Font.custom("Arial", size: 48))
@@ -35,6 +39,7 @@ struct ContentView: View {
                     Image(currentCard.getName())
                         .resizable()
                         .frame(width: 256, height: 391)
+                        .rotation3DEffect(Angle(degrees: degrees), axis: (x: 0, y: 1, z: 0))
                     ZStack {
                         Button("Play") {
                             //List of Names
@@ -47,36 +52,60 @@ struct ContentView: View {
                             currentCard = shuffledCards[0]
                             nextCard = shuffledCards[1]
                             gameOver = false
+                            withAnimation(.easeIn(duration: 0.5)) {
+                                degrees += 360
+                            }
                         }
                         .opacity(gameOver == false ? 0 : 1)
+                        .frame(width: 80.95, height: 50)
                         .buttonStyle(CustomButtonStyle())
                         HStack {
                             Button("Higher") { //if previous card is higher than current add a point to score; If not reset the game
                                 if currentCard.compareCards(card1: nextCard) <= 0 {
-                                    shuffledCards.remove(at: 0)
-                                    getNextCard()
                                     score+=1
+                                    getNextCard()
+                                    withAnimation(.easeIn(duration: 0.5)) {
+                                        degrees += 360
+                                    }
                                 }
                                 else {
                                     end()
                                 }
                             }
+                            .frame(width: 128, height: 50)
                             .buttonStyle(CustomButtonStyle())
                             .opacity(gameOver == true ? 0 : 1)
                             Button("Lower") { //if previous card is lower than current add a point to score; If not reset the game
                                 if currentCard.compareCards(card1: nextCard) >= 0 {
-                                    getNextCard()
                                     score+=1
+                                    getNextCard()
+                                    withAnimation(.easeIn(duration: 0.5)) {
+                                        degrees += 360
+                                    }
                                 }
                                 else {
                                     end()
                                 }
                             }
+                            .frame(width: 128, height: 50)
                             .buttonStyle(CustomButtonStyle())
                             .opacity(gameOver == true ? 0 : 1)
                         }
                     }
                 }
+                .alert(isPresented: $endReached, content: {
+                    Alert(title: Text("You won the game!"),
+                          dismissButton: .destructive(Text("Play again"),
+                          action: {
+                            withAnimation(Animation.default) {
+                                score = 0
+                                currentCard = Card(value: -1, name: "red_back")
+                                nextCard = Card(value: -1, name: "red_back")
+                                gameOver = true
+                                endReached = false
+                            }
+                        }))
+                    })
             }
         }
     }
@@ -93,31 +122,19 @@ struct ContentView: View {
         if score < shuffledCards.count - 1 {
             nextCard = shuffledCards[score+1]
         }
-        
+        else if score == shuffledCards.count - 1 {
+            endReached = true
+        }
     }
+    
     struct CustomButtonStyle: ButtonStyle {
         func makeBody(configuration: Configuration) -> some View {
             configuration.label
-                .frame(width: 80.95, height: 50)
                 .font(Font.custom("Arial", size: 24))
                 .padding()
                 .background(.red).opacity(configuration.isPressed ? 0.0 : 1.0)
                 .foregroundColor(.white)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
-        }
-    }
-    
-    struct InstructionsView: View {
-        var body: some View {
-            ZStack {
-                Color.gray.opacity(0.7).ignoresSafeArea()
-                VStack {
-                    VStack (alignment: .leading) {
-                        
-                    }
-                    Spacer()
-                }
-            }
         }
     }
 }
